@@ -13,11 +13,12 @@ public class Main {
 
         sortedStudentsByAverageGrades(classes);
         sortedSubjectsByAverageGrades(classes);
-//        sortedClassesByAverageGrades(classes);
+        sortedClassesByAverageGrades(classes);
     }
 
     public static void sortedStudentsByAverageGrades(List<Clazz> classes) {
         System.out.println("Sorted students by their average grades: ");
+
         classes.stream()
                 .flatMap(clazz -> clazz.getStudents().stream())
                 .collect(Collectors.toMap(Student::getName, student -> student.getSubjectsAndGrades().values().stream()
@@ -27,41 +28,50 @@ public class Main {
                 .entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .forEach(pair -> System.out.printf("%s -> %.2f%n", pair.getKey(), pair.getValue()));
+
         System.out.println();
     }
 
     public static void sortedSubjectsByAverageGrades(List<Clazz> classes) {
         System.out.println("Sorted subjects by average of grades given to students: ");
 
-        Map<String, List<Integer>> subjectGrades = classes.stream()
+        classes.stream()
                 .flatMap(clazz -> clazz.getStudents().stream())
                 .flatMap(student -> student.getSubjectsAndGrades().entrySet().stream())
                 .collect(Collectors.toMap(entry -> entry.getKey().getName(),
                         entry -> new ArrayList<>(Collections.singletonList(entry.getValue())),
-                        (first, second) -> { first.addAll(second); return first; }));
-
-        subjectGrades.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry ->entry.getValue().stream()
+                        (first, second) -> {
+                            first.addAll(second);
+                            return first;
+                        })).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .mapToDouble(value -> value)
                         .average()
                         .orElse(0.0)))
                 .entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .forEach(pair -> System.out.printf("%s -> %.2f%n", pair.getKey(), pair.getValue()));
+
         System.out.println();
     }
 
     public static void sortedClassesByAverageGrades(List<Clazz> classes) {
         System.out.println("Sorted classes with the best students: ");
+
         classes.stream()
-                .flatMap(clazz -> clazz.getStudents().stream())
-                .collect(Collectors.toMap(Student::getName, student -> student.getSubjectsAndGrades().values().stream()
+                .collect(Collectors.toMap(Clazz::getName, clazz -> clazz.getStudents().stream()
+                        .map(student -> student.getSubjectsAndGrades().values().stream()
+                                .mapToDouble(value -> value)
+                                .average()
+                                .orElse(0.0))
+                        .toList().stream()
                         .mapToDouble(value -> value)
                         .average()
                         .orElse(0.0)))
                 .entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .forEach(pair -> System.out.printf("%s -> %.2f%n", pair.getKey(), pair.getValue()));
+
         System.out.println();
     }
 
