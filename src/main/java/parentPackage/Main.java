@@ -36,8 +36,8 @@ public class Main {
         System.out.println("Sorted subjects by average of grades given to students: ");
 
         classes.stream()
-                .flatMap(clazz -> clazz.getStudents().stream())
-                .flatMap(student -> student.getSubjectsAndGrades().entrySet().stream())
+                .flatMap(clazz -> clazz.getStudents().stream()
+                        .flatMap(student -> student.getSubjectsAndGrades().entrySet().stream()))
                 .collect(Collectors.toMap(entry -> entry.getKey().getName(),
                         entry -> new ArrayList<>(Collections.singletonList(entry.getValue())),
                         (first, second) -> {
@@ -60,12 +60,10 @@ public class Main {
 
         classes.stream()
                 .collect(Collectors.toMap(Clazz::getName, clazz -> clazz.getStudents().stream()
-                        .map(student -> student.getSubjectsAndGrades().values().stream()
+                        .mapToDouble(student -> student.getSubjectsAndGrades().values().stream()
                                 .mapToDouble(value -> value)
                                 .average()
                                 .orElse(0.0))
-                        .toList().stream()
-                        .mapToDouble(value -> value)
                         .average()
                         .orElse(0.0)))
                 .entrySet().stream()

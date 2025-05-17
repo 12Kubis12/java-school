@@ -6,7 +6,6 @@ import java.util.Map;
 public class Student {
     private final String name;
     private final Map<Subject, Integer> subjectsAndGrades;
-    private Clazz clazz;
 
     public Student(String name) {
         this.name = name;
@@ -23,13 +22,5 @@ public class Student {
 
     public Map<Subject, Integer> getSubjectsAndGrades() {
         return this.subjectsAndGrades;
-    }
-
-    public Clazz getClazz() {
-        return this.clazz;
-    }
-
-    public void setClazz(Clazz clazz) {
-        this.clazz = clazz;
     }
 }
