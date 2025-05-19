@@ -1,0 +1,8 @@
+Subject
+Math, Biology, Physics, Geography, Chemistry, Physical Education, Civil Education, English, Art, Music
+Teacher
+Teacher 01-Math; Physics, Teacher 02-Chemistry; Biology; Physical Education, Teacher 03-Geography; Civil Education, Teacher 04-English; Art; Music
+Student
+Student 01-Math:4; Geography:3; Civil Education:2, Student 02-Math:1; Physics:1; Physical Education:3, Student 03-Math:2; Chemistry:1; Physics:1, Student 04-Chemistry:1; Biology:2; Physical Education:3, Student 05-Chemistry:1; Math:2; Civil Education:4, Student 06-Chemistry:2; Art:5; Music:1, Student 07-Geography:2; Physical Education:1; Biology:1; Chemistry:3, Student 08-Geography:1; Math:3; Music:1; Art:1, Student 09-Geography:4; Art:3; Chemistry:2; Physics:1, Student 10-English:1; Physical Education:2; Geography:3; Music:2, Student 11-English:2; Civil Education:2; Math:2; Biology:3, Student 12-English:1; Physics:3; Art:4; Music:5
+Class
+1.A-Teacher 01:Student 01; Student 02; Student 03, 1.B-Teacher 02:Student 04; Student 05; Student 06, 2.A-Teacher 03:Student 07; Student 08; Student 09, 2.B-Teacher 04:Student 10; Student 11; Student 12

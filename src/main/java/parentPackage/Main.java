@@ -1,19 +1,19 @@
 package parentPackage;
 
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         List<Clazz> classes = createClasses();
 
-        sortedStudentsByAverageGrades(classes);
-        sortedSubjectsByAverageGrades(classes);
-        sortedClassesByAverageGrades(classes);
+        if (!classes.isEmpty()) {
+            printClasses(classes);
+            sortedStudentsByAverageGrades(classes);
+            sortedSubjectsByAverageGrades(classes);
+            sortedClassesByAverageGrades(classes);
+        }
     }
 
     public static void sortedStudentsByAverageGrades(List<Clazz> classes) {
@@ -74,113 +74,137 @@ public class Main {
     }
 
     public static List<Clazz> createClasses() {
-        Subject math = new Subject("Math");
-        Subject biology = new Subject("Biology");
-        Subject physics = new Subject("Physics");
-        Subject geography = new Subject("Geography");
-        Subject chemistry = new Subject("Chemistry");
-        Subject physicalEducation = new Subject("Physical Education");
-        Subject civicEducation = new Subject("Civic Education");
-        Subject english = new Subject("English");
-        Subject art = new Subject("Art");
-        Subject music = new Subject("Music");
+        Map<InstanceType, List<Object>> all_instances = new HashMap<>();
+        List<Clazz> classes = new ArrayList<>();
+        boolean continueValue = true;
 
-        Teacher teacher01 = new Teacher("Teacher 01");
-        teacher01.addSubject(math);
-        teacher01.addSubject(physics);
+        File file = new File("src/all_instances.txt");
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(file);
+        } catch (Exception e) {
+            System.out.println("File not found!!!");
+            continueValue = false;
+        }
 
-        Teacher teacher02 = new Teacher("Teacher 02");
-        teacher02.addSubject(chemistry);
-        teacher02.addSubject(biology);
-        teacher02.addSubject(physicalEducation);
+        if (continueValue) {
+            while (scanner.hasNextLine() && continueValue) {
+                continueValue = scanLine(scanner, all_instances);
+            }
 
-        Teacher teacher03 = new Teacher("Teacher 03");
-        teacher03.addSubject(geography);
-        teacher03.addSubject(civicEducation);
+            if (continueValue) {
+                for (Object clazz : all_instances.get(InstanceType.CLASS)) {
+                    classes.add((Clazz) clazz);
+                }
+            }
+        }
 
-        Teacher teacher04 = new Teacher("Teacher 04");
-        teacher04.addSubject(english);
-        teacher04.addSubject(art);
-        teacher04.addSubject(music);
+        return classes;
+    }
 
-        Student student01 = new Student("Student 01");
-        student01.addSubjectsAndGrades(math, 4);
-        student01.addSubjectsAndGrades(geography, 3);
-        student01.addSubjectsAndGrades(civicEducation, 2);
+    public static boolean scanLine(Scanner scanner, Map<InstanceType, List<Object>> all_instances) {
+        boolean stopValue = true;
+        String line = scanner.nextLine();
+        try {
+            InstanceType instanceType = InstanceType.getFromString(line);
+            createInstances(all_instances, instanceType, scanner);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Check your .txt file!!!");
+            stopValue = false;
+        }
+        return stopValue;
+    }
 
-        Student student02 = new Student("Student 02");
-        student02.addSubjectsAndGrades(math, 1);
-        student02.addSubjectsAndGrades(physics, 1);
-        student02.addSubjectsAndGrades(physicalEducation, 3);
+    public static void createInstances(Map<InstanceType, List<Object>> all_instances, InstanceType instanceType, Scanner scanner) throws Exception {
+        all_instances.put(instanceType, new ArrayList<>());
+        String[] oneTypeInstances = scanner.nextLine().split(", ");
 
-        Student student03 = new Student("Student 03");
-        student03.addSubjectsAndGrades(chemistry, 2);
-        student03.addSubjectsAndGrades(math, 1);
-        student03.addSubjectsAndGrades(physics, 1);
-        student03.addSubjectsAndGrades(biology, 2);
+        for (String instance : oneTypeInstances) {
+            switch (instanceType) {
+                case CLASS -> createClass(all_instances, instance);
+                case TEACHER -> createTeacher(all_instances, instance);
+                case STUDENT -> createStudent(all_instances, instance);
+                case SUBJECT -> createSubject(all_instances, instance);
+            }
+        }
+    }
 
-        Student student04 = new Student("Student 04");
-        student04.addSubjectsAndGrades(chemistry, 1);
-        student04.addSubjectsAndGrades(biology, 2);
-        student04.addSubjectsAndGrades(physicalEducation, 2);
-        student04.addSubjectsAndGrades(physics, 5);
+    public static void createClass(Map<InstanceType, List<Object>> all_instances, String instance) throws Exception {
+        String[] instancesArray = instance.split("-");
+        String teacherString = instancesArray[1].split(":")[0];
+        String[] students = instancesArray[1].split(":")[1].split("; ");
+        Clazz clazz = new Clazz(instancesArray[0]);
 
-        Student student05 = new Student("Student 05");
-        student05.addSubjectsAndGrades(geography, 1);
-        student05.addSubjectsAndGrades(math, 2);
-        student05.addSubjectsAndGrades(civicEducation, 4);
+        for (Object object : all_instances.get(InstanceType.TEACHER)) {
+            Teacher teacher = ((Teacher) object);
+            if (teacher.getName().equals(teacherString)) {
+                clazz.setPrimaryTeacher(teacher);
+                break;
+            }
+        }
 
-        Student student06 = new Student("Student 06");
-        student06.addSubjectsAndGrades(geography, 2);
-        student06.addSubjectsAndGrades(art, 5);
-        student06.addSubjectsAndGrades(music, 1);
+        for (String studentString : students) {
+            for (Object object : all_instances.get(InstanceType.STUDENT)) {
+                Student student = ((Student) object);
+                if (student.getName().equals(studentString)) {
+                    clazz.addStudent(student);
+                    break;
+                }
+            }
+        }
 
-        Student student07 = new Student("Student 07");
-        student07.addSubjectsAndGrades(geography, 2);
-        student07.addSubjectsAndGrades(physicalEducation, 1);
-        student07.addSubjectsAndGrades(biology, 1);
+        all_instances.get(InstanceType.CLASS).add(clazz);
+    }
 
-        Student student08 = new Student("Student 08");
-        student08.addSubjectsAndGrades(english, 1);
-        student08.addSubjectsAndGrades(math, 4);
-        student08.addSubjectsAndGrades(music, 1);
-        student08.addSubjectsAndGrades(art, 1);
+    public static void createTeacher(Map<InstanceType, List<Object>> all_instances, String instance) throws Exception {
+        String[] instancesArray = instance.split("-");
+        String[] subjects = instancesArray[1].split("; ");
+        Teacher teacher = new Teacher(instancesArray[0]);
 
-        Student student09 = new Student("Student 09");
-        student09.addSubjectsAndGrades(english, 4);
-        student09.addSubjectsAndGrades(art, 3);
-        student09.addSubjectsAndGrades(chemistry, 1);
-        student09.addSubjectsAndGrades(physics, 1);
+        for (String subjectString : subjects) {
+            for (Object object : all_instances.get(InstanceType.SUBJECT)) {
+                Subject subject = ((Subject) object);
+                if (subject.getName().equals(subjectString)) {
+                    teacher.addSubject(subject);
+                    break;
+                }
+            }
+        }
 
-        Student student10 = new Student("Student 10");
-        student10.addSubjectsAndGrades(english, 1);
-        student10.addSubjectsAndGrades(physicalEducation, 1);
-        student10.addSubjectsAndGrades(geography, 2);
-        student10.addSubjectsAndGrades(music, 2);
+        all_instances.get(InstanceType.TEACHER).add(teacher);
+    }
 
-        Clazz clazz01 = new Clazz("1.A.");
-        clazz01.setPrimaryTeacher(teacher01);
-        clazz01.addStudent(student01);
-        clazz01.addStudent(student02);
+    public static void createStudent(Map<InstanceType, List<Object>> all_instances, String instance) throws Exception {
+        String[] instancesArray = instance.split("-");
+        String[] subjectsAndGrades = instancesArray[1].split("; ");
+        Student student = new Student(instancesArray[0]);
 
-        Clazz clazz02 = new Clazz("1.B.");
-        clazz02.setPrimaryTeacher(teacher02);
-        clazz02.addStudent(student03);
-        clazz02.addStudent(student04);
+        for (String s : subjectsAndGrades) {
+            String subjectString = s.split(":")[0];
+            int grade = Integer.parseInt(s.split(":")[1]);
+            for (Object object : all_instances.get(InstanceType.SUBJECT)) {
+                Subject subject = ((Subject) object);
+                if (subject.getName().equals(subjectString)) {
+                    student.addSubjectAndGrade(subject, grade);
+                    break;
+                }
+            }
+        }
 
-        Clazz clazz03 = new Clazz("2.A.");
-        clazz03.setPrimaryTeacher(teacher03);
-        clazz03.addStudent(student05);
-        clazz03.addStudent(student06);
-        clazz03.addStudent(student07);
+        all_instances.get(InstanceType.STUDENT).add(student);
+    }
 
-        Clazz clazz04 = new Clazz("2.B.");
-        clazz04.setPrimaryTeacher(teacher04);
-        clazz04.addStudent(student08);
-        clazz04.addStudent(student09);
-        clazz04.addStudent(student10);
+    public static void createSubject(Map<InstanceType, List<Object>> all_instances, String instance) {
+        all_instances.get(InstanceType.SUBJECT).add(new Subject(instance));
+    }
 
-
-        return List.of(clazz01, clazz02, clazz03, clazz04);
+    public static void printClasses(List<Clazz> classes) {
+        System.out.println("-".repeat(50) + " REPORT CLASSES " + "-".repeat(50));
+        for (Clazz clazz : classes) {
+            System.out.println(clazz);
+        }
+        System.out.println();
+        System.out.println("-".repeat(116));
     }
 }
