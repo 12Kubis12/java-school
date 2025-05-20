@@ -12,6 +12,6 @@ public enum InstanceType {
                 return instanceType;
             }
         }
-        throw new IllegalArgumentException("Wrong instance type in txt. file.");
+        throw new IllegalArgumentException("Wrong instance type.");
     }
 }

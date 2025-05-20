@@ -28,9 +28,9 @@ public class Student {
     public void addSubjectAndGrade(Subject subject, Integer grade) throws Exception {
         if (this.subjectsAndGrades.containsKey(subject)) {
             throw new Exception("Student " + this.name + " already has grade in subject " + subject.getName() + " -> "
-                    +this.subjectsAndGrades.get(subject) + ".");
+                    + this.subjectsAndGrades.get(subject) + ".");
         } else if (grade < 1 || grade > 5) {
-            throw new Exception("Given grade is not between 1 and 5 (inclusive).");
+            throw new Exception("Given grade is not between 1 and 5 (inclusive). -> " + this.name + "-" + subject.getName() + ":" + grade);
         } else {
             this.subjectsAndGrades.put(subject, grade);
         }
