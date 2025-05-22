@@ -2,6 +2,7 @@ package parentPackage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Teacher {
     private final String name;
@@ -11,13 +12,15 @@ public class Teacher {
     public Teacher(String name) {
         this.name = name;
         this.subjects = new ArrayList<>();
-        this.clazz = null;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.name).append(" (Subjects: ");
+        stringBuilder.append(this.name);
+        if (!this.subjects.isEmpty()) {
+            stringBuilder.append(" (Subjects: ");
+        }
         for (int i = 0; i < this.subjects.size(); i++) {
             stringBuilder.append(subjects.get(i));
             if (i == this.subjects.size() - 1) {
@@ -29,14 +32,20 @@ public class Teacher {
         return stringBuilder.toString();
     }
 
-    public void addSubject(Subject subject) throws Exception {
-        if (subject.getTeacher() == null) {
-            subject.setTeacher(this);
-            this.subjects.add(subject);
-        } else {
-            throw new Exception("Subject " + subject.getName() + " already has a teacher: "
-                    + subject.getTeacher().getName() + ".");
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Teacher teacher = (Teacher) o;
+        return Objects.equals(name, teacher.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    public void addSubject(Subject subject) {
+        this.subjects.add(subject);
     }
 
     public String getName() {

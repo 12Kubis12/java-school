@@ -2,16 +2,20 @@ package parentPackage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Clazz {
     private final String name;
-    private Teacher primaryTeacher;
+    private final Teacher primaryTeacher;
     private final List<Student> students;
 
-    public Clazz(String name) {
+    public Clazz(String name, Teacher primaryTeacher) {
         this.name = name;
         this.students = new ArrayList<>();
-        this.primaryTeacher = null;
+        this.primaryTeacher = primaryTeacher;
+        if (this.primaryTeacher != null) {
+            this.primaryTeacher.setClazz(this);
+        }
     }
 
     @Override
@@ -25,14 +29,20 @@ public class Clazz {
         return stringBuilder.toString();
     }
 
-    public void addStudent(Student student) throws Exception {
-        if (student.getClazz() == null) {
-            student.setClazz(this);
-            this.students.add(student);
-        } else {
-            throw new Exception("Student " + student.getName() + " is already member of a class: "
-                    + student.getClazz().getName() + ".");
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Clazz clazz = (Clazz) o;
+        return Objects.equals(name, clazz.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    public void addStudent(Student student) {
+        this.students.add(student);
     }
 
     public String getName() {
@@ -45,15 +55,5 @@ public class Clazz {
 
     public Teacher getPrimaryTeacher() {
         return this.primaryTeacher;
-    }
-
-    public void setPrimaryTeacher(Teacher primaryTeacher) throws Exception {
-        if (primaryTeacher.getClazz() == null) {
-            primaryTeacher.setClazz(this);
-            this.primaryTeacher = primaryTeacher;
-        } else {
-            throw new Exception("Teacher " + primaryTeacher.getName() + " is already primary teacher for a class: "
-                    + primaryTeacher.getClazz().getName() + ".");
-        }
     }
 }

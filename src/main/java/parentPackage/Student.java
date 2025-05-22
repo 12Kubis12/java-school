@@ -2,16 +2,20 @@ package parentPackage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Student {
     private final String name;
     private final Map<Subject, Integer> subjectsAndGrades;
-    private Clazz clazz;
+    private final Clazz clazz;
 
-    public Student(String name) {
+    public Student(String name, Clazz clazz) {
         this.name = name;
+        this.clazz = clazz;
+        if (this.clazz != null) {
+            this.clazz.addStudent(this);
+        }
         this.subjectsAndGrades = new HashMap<>();
-        this.clazz = null;
     }
 
     @Override
@@ -25,15 +29,20 @@ public class Student {
         return stringBuilder.toString();
     }
 
-    public void addSubjectAndGrade(Subject subject, Integer grade) throws Exception {
-        if (this.subjectsAndGrades.containsKey(subject)) {
-            throw new Exception("Student " + this.name + " already has grade in subject " + subject.getName() + " -> "
-                    + this.subjectsAndGrades.get(subject) + ".");
-        } else if (grade < 1 || grade > 5) {
-            throw new Exception("Given grade is not between 1 and 5 (inclusive). -> " + this.name + "-" + subject.getName() + ":" + grade);
-        } else {
-            this.subjectsAndGrades.put(subject, grade);
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Student student = (Student) o;
+        return Objects.equals(name, student.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    public void addSubjectAndGrade(Subject subject, Integer grade) {
+        this.subjectsAndGrades.put(subject, grade);
     }
 
     public String getName() {
@@ -46,9 +55,5 @@ public class Student {
 
     public Clazz getClazz() {
         return this.clazz;
-    }
-
-    public void setClazz(Clazz clazz) {
-        this.clazz = clazz;
     }
 }
