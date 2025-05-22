@@ -1,4 +1,4 @@
-package parentPackage;
+package parentPackage.school;
 
 import java.io.File;
 import java.util.*;
@@ -293,7 +293,8 @@ public class School {
         }
         return name;
     }
-// every time an instance is being created which needs different existing instance, this function is called to give options
+
+    // every time an instance is being created which needs different existing instance, this function is called to give options
 // this process can be stopped only when creating subjects and grades
     private String chooseFromOptions(List<String> options, boolean possibleStop) {
         String index;

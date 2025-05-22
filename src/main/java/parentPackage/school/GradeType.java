@@ -1,4 +1,4 @@
-package parentPackage;
+package parentPackage.school;
 
 public enum GradeType {
     ONE(1),

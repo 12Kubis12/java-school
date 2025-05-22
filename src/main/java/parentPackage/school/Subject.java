@@ -1,4 +1,4 @@
-package parentPackage;
+package parentPackage.school;
 
 import java.util.Objects;
 
