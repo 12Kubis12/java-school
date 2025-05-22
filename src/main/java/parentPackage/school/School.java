@@ -416,7 +416,7 @@ public class School {
         } else if (subjectsAndGrades.size() < minSubjectsAmount) {
             throw new Exception("Student " + student.getName() + " has to study a least " + minSubjectsAmount + " subjects.");
         }
-// map of subjects and grades is created for a student even is some exception is thrown, but continueVariable stop whole process above
+
         subjectsAndGrades.forEach((key, value) ->
                 student.addSubjectAndGrade(availableSubjects.stream()
                         .filter(subject -> subject.getName().equals(key))
