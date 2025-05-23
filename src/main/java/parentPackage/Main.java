@@ -8,6 +8,7 @@ public class Main {
 
         if (!school.getClasses().isEmpty()) {
             school.printClasses();
+
             school.sortedStudentsByAverageGrades();
             school.sortedSubjectsByAverageGrades();
             school.sortedClassesByAverageGrades();
