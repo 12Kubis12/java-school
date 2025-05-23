@@ -28,6 +28,7 @@ public class Student implements ComparableByName {
                 .sorted(Comparator.comparing(subjectIntegerEntry -> subjectIntegerEntry.getKey().getName()))
                 .forEach(entry ->
                 stringBuilder.append(entry.getKey()).append(" -> ").append(entry.getValue()).append(", "));
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
 
         return stringBuilder.toString();
     }

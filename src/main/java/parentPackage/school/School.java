@@ -1,10 +1,15 @@
 package parentPackage.school;
 
 import java.io.File;
+import java.io.FileWriter;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class School {
+    private final String readFilePath;
+    private final String writeFilePath;
+    private StringBuilder stringToWrite;
     private Scanner scanner;
     private final Map<InstanceType, List<ComparableByName>> all_instances;
     private String inputWay;
@@ -16,6 +21,8 @@ public class School {
     private final int studentsPerClassMinAmount;
 
     public School() {
+        this.readFilePath = "src/all_instances.txt";
+        this.writeFilePath = "src/output.txt";
         this.all_instances = new HashMap<>();
         this.classes = new ArrayList<>();
         this.continueVariable = true;
@@ -43,7 +50,7 @@ public class School {
 
     private void createEntities() {
         if (this.inputWay.equals("F")) {
-            File file = new File("src/all_instances.txt");
+            File file = new File(this.readFilePath);
             try {
                 this.scanner = new Scanner(file);
             } catch (Exception e) {
@@ -58,6 +65,8 @@ public class School {
         } else if (this.inputWay.equals("T")) {
             System.out.println("Be careful what you write otherwise you can create entities with strange names or" +
                     " start from the beginning if you use something wrong way!");
+            this.stringToWrite = new StringBuilder();
+
             int count = 1;
             while (count <= 4) {
                 switch (count) {
@@ -72,6 +81,14 @@ public class School {
                 } else {
                     count = 1;
                 }
+            }
+// create file with created entities
+            try {
+                FileWriter fileWriter = new FileWriter(this.writeFilePath);
+                fileWriter.write(this.stringToWrite.toString());
+                fileWriter.close();
+            } catch (Exception e) {
+                System.out.println("Something is wrong with file write!");
             }
         }
 // delete all teachers who do not teach any subject and are not primary teacher for any class
@@ -106,6 +123,15 @@ public class School {
             instancesLine = this.scanner.nextLine().split(", ");
         } else {
             instancesLine = this.scanInstances(instanceType);
+
+            this.stringToWrite.append(instanceType.toString()).append("\n");
+            Arrays.stream(instancesLine)
+                    .sorted()
+                    .forEach(instance -> this.stringToWrite.append(instance).append(", "));
+            this.stringToWrite.delete(this.stringToWrite.length() - 2, this.stringToWrite.length());
+            if (instanceType != InstanceType.STUDENT) {
+                this.stringToWrite.append("\n");
+            }
         }
 // if everything except students is created, check the conditions for amount of entities
         if (instanceType == InstanceType.STUDENT) {
@@ -169,7 +195,7 @@ public class School {
                     unfilledCLasses.entrySet().stream()
                             .sorted(Map.Entry.comparingByKey())
                             .forEach(entry -> System.out.println(entry.getKey()
-                            + " -> " + (this.studentsPerClassMinAmount - entry.getValue()) + " more"));
+                                    + " -> " + (this.studentsPerClassMinAmount - entry.getValue()) + " more"));
                 }
             }
 

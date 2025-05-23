@@ -21,12 +21,12 @@ public class Teacher implements ComparableByName {
         stringBuilder.append(this.name);
         if (!this.subjects.isEmpty()) {
             stringBuilder.append(" (Subjects: ");
+            this.subjects.stream()
+                    .sorted(Comparator.comparing(Subject::getName))
+                    .forEach(subject -> stringBuilder.append(subject).append(", "));
+            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+            stringBuilder.append(")");
         }
-        this.subjects.stream()
-                .sorted(Comparator.comparing(Subject::getName))
-                .forEach(subject -> stringBuilder.append(subject).append(", "));
-        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        stringBuilder.append(")");
 
         return stringBuilder.toString();
     }
