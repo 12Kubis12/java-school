@@ -1,10 +1,11 @@
 package parentPackage.school;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class Teacher {
+public class Teacher implements ComparableByName {
     private final String name;
     private final List<Subject> subjects;
     private Clazz clazz;
@@ -21,14 +22,12 @@ public class Teacher {
         if (!this.subjects.isEmpty()) {
             stringBuilder.append(" (Subjects: ");
         }
-        for (int i = 0; i < this.subjects.size(); i++) {
-            stringBuilder.append(subjects.get(i));
-            if (i == this.subjects.size() - 1) {
-                stringBuilder.append(")");
-            } else {
-                stringBuilder.append(", ");
-            }
-        }
+        this.subjects.stream()
+                .sorted(Comparator.comparing(Subject::getName))
+                .forEach(subject -> stringBuilder.append(subject).append(", "));
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+        stringBuilder.append(")");
+
         return stringBuilder.toString();
     }
 
@@ -36,12 +35,12 @@ public class Teacher {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Teacher teacher = (Teacher) o;
-        return Objects.equals(name, teacher.name);
+        return Objects.equals(this.name, teacher.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(this.name);
     }
 
     public void addSubject(Subject subject) {
@@ -49,7 +48,7 @@ public class Teacher {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public List<Subject> getSubjects() {

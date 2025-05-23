@@ -1,5 +1,7 @@
 package parentPackage.school;
 
+import java.util.Arrays;
+
 public enum GradeType {
     ONE(1),
     TWO(2),
@@ -14,12 +16,10 @@ public enum GradeType {
     }
 
     public static GradeType getFromNumber(int number) {
-        for (GradeType gradeType : GradeType.values()) {
-            if (gradeType.number == number) {
-                return gradeType;
-            }
-        }
-        throw new IllegalArgumentException("The grade \"" + number + "\" is not between 1 and 5 inclusive.");
+        return Arrays.stream(GradeType.values())
+                .filter(gradeType -> gradeType.number == number)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("The grade \"" + number + "\" is not between 1 and 5 inclusive."));
     }
 
     public int getNumber() {

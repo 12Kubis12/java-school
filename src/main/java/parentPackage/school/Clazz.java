@@ -1,10 +1,11 @@
 package parentPackage.school;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class Clazz {
+public class Clazz implements ComparableByName {
     private final String name;
     private final Teacher primaryTeacher;
     private final List<Student> students;
@@ -23,9 +24,10 @@ public class Clazz {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\nClass ").append(this.name).append(": \n").append("Primary teacher: ")
                 .append(this.primaryTeacher);
-        for (Student student : this.students) {
-            stringBuilder.append(student);
-        }
+        this.students.stream()
+                .sorted(Comparator.comparing(Student::getName))
+                .forEach(stringBuilder::append);
+
         return stringBuilder.toString();
     }
 
@@ -33,12 +35,12 @@ public class Clazz {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Clazz clazz = (Clazz) o;
-        return Objects.equals(name, clazz.name);
+        return Objects.equals(this.name, clazz.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(this.name);
     }
 
     public void addStudent(Student student) {
@@ -46,7 +48,7 @@ public class Clazz {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public List<Student> getStudents() {

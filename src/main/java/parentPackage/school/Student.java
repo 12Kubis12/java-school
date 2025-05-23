@@ -1,10 +1,11 @@
 package parentPackage.school;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Student {
+public class Student implements ComparableByName {
     private final String name;
     private final Map<Subject, Integer> subjectsAndGrades;
     private final Clazz clazz;
@@ -23,9 +24,11 @@ public class Student {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\n");
         stringBuilder.append(this.name).append(": ");
-        for (Map.Entry<Subject, Integer> entry : subjectsAndGrades.entrySet()) {
-            stringBuilder.append(entry.getKey()).append(" -> ").append(entry.getValue()).append(", ");
-        }
+        this.subjectsAndGrades.entrySet().stream()
+                .sorted(Comparator.comparing(subjectIntegerEntry -> subjectIntegerEntry.getKey().getName()))
+                .forEach(entry ->
+                stringBuilder.append(entry.getKey()).append(" -> ").append(entry.getValue()).append(", "));
+
         return stringBuilder.toString();
     }
 
@@ -33,12 +36,12 @@ public class Student {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return Objects.equals(name, student.name);
+        return Objects.equals(this.name, student.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(this.name);
     }
 
     public void addSubjectAndGrade(Subject subject, Integer grade) {
@@ -46,7 +49,7 @@ public class Student {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public Map<Subject, Integer> getSubjectsAndGrades() {

@@ -1,5 +1,7 @@
 package parentPackage.school;
 
+import java.util.Arrays;
+
 public enum InstanceType {
     CLASS,
     TEACHER,
@@ -7,11 +9,9 @@ public enum InstanceType {
     SUBJECT;
 
     public static InstanceType getFromString(String string) {
-        for (InstanceType instanceType : InstanceType.values()) {
-            if (string.toUpperCase().equals(instanceType.toString())) {
-                return instanceType;
-            }
-        }
-        throw new IllegalArgumentException("Wrong instance type.");
+        return Arrays.stream(InstanceType.values())
+                .filter(instanceType -> instanceType.toString().equals(string))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Wrong instance type -> " + string));
     }
 }
