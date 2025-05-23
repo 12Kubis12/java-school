@@ -404,7 +404,6 @@ public class School {
             List<String> subjects = subjectsAndGrades.entrySet().stream()
                     .filter((entry -> entry.getValue() == 0))
                     .map(Map.Entry::getKey)
-                    .sorted()
                     .toList();
             throw new Exception("Student " + student.getName() + " already has grade in subjects - "
                     + subjects + ", or the subjects do not exist.");
