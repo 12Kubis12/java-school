@@ -1,8 +1,9 @@
 package parentPackage.school;
 
 import java.io.File;
-import java.io.FileWriter;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,9 +85,7 @@ public class School {
             }
 // create file with created entities
             try {
-                FileWriter fileWriter = new FileWriter(this.writeFilePath);
-                fileWriter.write(this.stringToWrite.toString());
-                fileWriter.close();
+                Files.writeString(Path.of(this.writeFilePath), this.stringToWrite.toString());
             } catch (Exception e) {
                 System.out.println("Something is wrong with file write!");
             }
