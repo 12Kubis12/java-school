@@ -8,6 +8,16 @@ import java.util.stream.Collectors;
 
 public class StatisticalService {
 
+    public void pintStats(List<Clazz> classes) {
+        if (!classes.isEmpty()) {
+            this.printClasses(classes);
+
+            this.sortedStudentsByAverageGrades(classes);
+            this.sortedSubjectsByAverageGrades(classes);
+            this.sortedClassesByAverageGrades(classes);
+        }
+    }
+
     private void printClasses(List<Clazz> classes) {
         System.out.println("-".repeat(50) + " REPORT CLASSES " + "-".repeat(50));
         classes
@@ -73,15 +83,5 @@ public class StatisticalService {
                 .forEach(pair -> System.out.printf("%s -> %.2f%n", pair.getKey(), pair.getValue()));
 
         System.out.println();
-    }
-
-    public void pintStats(List<Clazz> classes) {
-        if (!classes.isEmpty()) {
-            this.printClasses(classes);
-
-            this.sortedStudentsByAverageGrades(classes);
-            this.sortedSubjectsByAverageGrades(classes);
-            this.sortedClassesByAverageGrades(classes);
-        }
     }
 }
