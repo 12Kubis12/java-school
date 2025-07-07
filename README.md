@@ -9,6 +9,7 @@ This project makes effective use of the **Java Stream API** to process collectio
 ## ✨ Features
 
 - Add teachers, subjects, classes, students, and grades from the console or from a file
+- If adding from the console, an output file is created at [`src/`](https://github.com/12Kubis12/java-school/blob/main/src/).
 - The program prints the following statistics:
   - **Sorted list of students** by their average grades.
   - **Sorted list of subjects** by the average of grades assigned.
